@@ -15,7 +15,8 @@ class Student extends Model
     protected $table = "students";
     private string $first_name;
     private string $last_name;
-    private string $birth_date;
+    private bool $gender;
+    private datetime $birth_date;
 
 
     /**
@@ -46,7 +47,7 @@ class Student extends Model
         return Attribute::make(
 //            get: fn($value, $attributes) => $attributes === '1' ? 'Male' : 'Female',
             get: function ($value, $attributes) {
-                return $attributes === '1' ? 'Male' : 'Female';
+                return $attributes['gender'] === 1 ? 'Male' : 'Female';
             }
         );
     }

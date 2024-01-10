@@ -1,6 +1,10 @@
 <h1>
     This is student index page
 </h1>
+<a href="{{ route('student.create') }}">
+    Create new student
+</a>
+<br>
 <table border="1" width="100%">
     <tr>
         <th>
