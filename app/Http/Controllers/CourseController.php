@@ -14,11 +14,15 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : Application|Factory|View
+    public function index(Request $request) : Application|Factory|View
     {
-        $data = Course::query()->get();
+        $search = $request->get('search') ?? '';
+        $data = Course::query()
+            ->where('course_name', 'like', "%$search%")
+            ->paginate(5);
         return view('course.index', [
             'courseList' => $data,
+            'search' => $search,
         ]);
     }
 
@@ -55,15 +59,21 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        //
+        return view('course.edit', [
+            'course' => $course,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCourseRequest $request, Course $course)
+    public function update(Request $request, Course $course)
     {
-        //
+//        Course::query()
+//            ->where('id', $course->id)
+//            ->update($request-
+        $course->update($request->except('_token', '_method'));
+        return redirect()->route('course.index');
     }
 
     /**
@@ -71,6 +81,9 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        dd(1);
+        $course->delete();
+        //other way to delete
+        //Course::destroy($course->id);
+        return redirect()->route('course.index');
     }
 }
