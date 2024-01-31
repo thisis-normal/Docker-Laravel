@@ -1,23 +1,26 @@
+{{--@if ($errors->any())--}}
+{{--    <div class="alert alert-danger" style="color: red">--}}
+{{--        <ul>--}}
+{{--            @foreach ($errors->all() as $error)--}}
+{{--                <li>{{ $error }}</li>--}}
+{{--            @endforeach--}}
+{{--        </ul>--}}
+{{--    </div>--}}
+{{--@endif--}}
 <form action="{{route('course.store')}}" method="post">
     @csrf
     <label>Name:<br>
-        <input type="text" name="course_name" value="">
+        <input type="text" name="course_name" value="{{old('course_name')}}">
     </label>
-{{--    <br>--}}
-{{--    <label>Last name:<br>--}}
-{{--        <input type="text" name="last_name" value="">--}}
-{{--    </label>--}}
-{{--    <br>--}}
-{{--    <label>Gender:<br>--}}
-{{--        <input type="radio" name="gender" value="1">Male--}}
-{{--        <input type="radio" name="gender" value="2">Female--}}
-{{--    </label>--}}
-{{--    <br>--}}
-{{--    <label>Birthday:<br>--}}
-{{--        <input type="date" name="birthday" value="">--}}
-{{--    </label>--}}
+    <br>
+    @if($errors->has('course_name'))
+        <span style="color: red">{{$errors->first('course_name')}}</span>
+    @endif
     <br>
     <label><br>
         <input type="submit" name="submit" value="Submit">
     </label>
 </form>
+{{--<script>--}}
+{{--    alert("hi");--}}
+{{--</script>--}}

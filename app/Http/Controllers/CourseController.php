@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCourseRequest;
 use App\Models\Course;
 use App\Http\Requests\UpdateCourseRequest;
 use Illuminate\Foundation\Application;
@@ -19,7 +20,8 @@ class CourseController extends Controller
         $search = $request->get('search') ?? '';
         $data = Course::query()
             ->where('course_name', 'like', "%$search%")
-            ->paginate(5);
+            ->paginate(2);
+        $data->appends(['search' => $search]);
         return view('course.index', [
             'courseList' => $data,
             'search' => $search,
@@ -37,13 +39,15 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCourseRequest $request)
     {
-        $course = new Course();
-        $course->fill($request->except('_token'));
-        if ($course->save()) {
-            return redirect()->route('course.index');
-        }
+//        $course = new Course();
+//        $course->fill($request->validated());
+//        if ($course->save()) {
+//            return redirect()->route('course.index');
+//        }
+        Course::query()->create($request->validated());
+        return redirect()->route('course.index');
     }
 
     /**
@@ -67,12 +71,14 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Course $course)
+    public function update(UpdateCourseRequest $request, Course $course)
     {
 //        Course::query()
 //            ->where('id', $course->id)
 //            ->update($request-
-        $course->update($request->except('_token', '_method'));
+//        $course->update($request->except('_token', '_method'));
+        $course->fill($request->validated());
+        $course->save();
         return redirect()->route('course.index');
     }
 
