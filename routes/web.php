@@ -51,4 +51,4 @@ Route::name('course.')->group(function () {
 /**
  * Route Resource
  */
-Route::resource('course', CourseController::class);
+//Route::resource('course', CourseController::class);

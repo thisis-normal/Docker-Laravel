@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCourseRequest;
 use App\Models\Course;
 use App\Http\Requests\UpdateCourseRequest;
 use Illuminate\Foundation\Application;
@@ -14,12 +15,13 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) : Application|Factory|View
+    public function index(Request $request): Application|Factory|View
     {
         $search = $request->get('search') ?? '';
         $data = Course::query()
             ->where('course_name', 'like', "%$search%")
-            ->paginate(5);
+            ->paginate(3);
+        $data->appends(['search' => $search]); //add search to pagination links
         return view('course.index', [
             'courseList' => $data,
             'search' => $search,
@@ -37,13 +39,11 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCourseRequest $request)
     {
-        $course = new Course();
-        $course->fill($request->except('_token'));
-        if ($course->save()) {
-            return redirect()->route('course.index');
-        }
+        Course::create($request->validate());
+        redirect()->route('course.index');
+        
     }
 
     /**
