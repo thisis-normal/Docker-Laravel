@@ -20,8 +20,8 @@ class CourseController extends Controller
         $search = $request->get('search') ?? '';
         $data = Course::query()
             ->where('course_name', 'like', "%$search%")
-            ->paginate(3);
-        $data->appends(['search' => $search]); //add search to pagination links
+            ->paginate(2);
+        $data->appends(['search' => $search]);
         return view('course.index', [
             'courseList' => $data,
             'search' => $search,
@@ -41,9 +41,13 @@ class CourseController extends Controller
      */
     public function store(StoreCourseRequest $request)
     {
-        Course::create($request->validate());
-        redirect()->route('course.index');
-        
+//        $course = new Course();
+//        $course->fill($request->validated());
+//        if ($course->save()) {
+//            return redirect()->route('course.index');
+//        }
+        Course::query()->create($request->validated());
+        return redirect()->route('course.index');
     }
 
     /**
@@ -67,12 +71,14 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Course $course)
+    public function update(UpdateCourseRequest $request, Course $course)
     {
 //        Course::query()
 //            ->where('id', $course->id)
 //            ->update($request-
-        $course->update($request->except('_token', '_method'));
+//        $course->update($request->except('_token', '_method'));
+        $course->fill($request->validated());
+        $course->save();
         return redirect()->route('course.index');
     }
 

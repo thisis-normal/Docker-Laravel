@@ -25,26 +25,25 @@ class StoreCourseRequest extends FormRequest
             'course_name' => [
                 'bail',
                 'required',
-                'unique:courses,course_name',
-//                'unique:App\Models\Course,course_name',
                 'string',
-                'min:3',
                 'max:255',
-            ],
+                'unique:App\Models\Course,course_name'
+            ]
         ];
     }
-    public function messages(): array
+    public function messages (): array
     {
         return [
-            'required' => ':attribute is required',
-            'unique' => ':attribute must be unique',
-            'string' => ':attribute must be string',
+            'required' => 'The :attribute field is required.',
+            'string' => 'The :attribute field must be a string.',
+            'max' => 'The :attribute field must be less than :max characters.',
+            'unique' => 'The :attribute field is already exists.',
         ];
     }
     public function attributes(): array
     {
         return [
-            'name' => 'Course name',
+            'course_name' => 'Course Name',
         ];
     }
 }

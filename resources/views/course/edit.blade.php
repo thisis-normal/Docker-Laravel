@@ -1,3 +1,12 @@
+@if ($errors->any())
+    <div class="alert alert-danger" style="color: red">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <form action="{{route('course.update', $course)}}" method="post">
     @csrf
     @method('PUT')
