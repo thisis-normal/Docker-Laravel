@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+    #Database
+    database:
+        image: mysql:8.1
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_DATABASE=${DB_DATABASE}
+
+volumes:
+    db_data: ~
