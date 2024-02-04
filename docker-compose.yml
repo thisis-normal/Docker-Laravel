@@ -14,6 +14,7 @@ services:
         working_dir: /var/www
         volumes:
             - ./:/var/www
+            - ./entrypoint.sh:/usr/local/bin/entrypoint.sh
         ports:
             - "8000:8080"
         depends_on:
