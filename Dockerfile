@@ -20,4 +20,4 @@ ENV PORT=8000
 #COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x entrypoint.sh
 # Run the entrypoint file.
-ENTRYPOINT [ "entrypoint.sh" ]
+ENTRYPOINT [ "sh", "entrypoint.sh" ]
