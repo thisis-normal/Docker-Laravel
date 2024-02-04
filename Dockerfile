@@ -1,18 +1,23 @@
-#FROM php:8.2.13-fpm as php
-## Set working directory to /var/www.
-#WORKDIR /var/www
-#
-#RUN apt-get update \
-#    && apt-get install --quiet --yes --no-install-recommends \
-#        libzip-dev \
-#        unzip \
-#    && docker-php-ext-install zip pdo pdo_mysql \
-#    && pecl install -o -f redis-7.2 \
-#    && docker-php-ext-enable redis
-#
-#COPY --from=composer /usr/bin/composer /usr/bin/composer
-#
-#
-#
-#
-#
+FROM php:8.2.13 as php
+
+RUN apt-get update -y
+RUN apt-get install -y  unzip libzip-dev libcurl4-gnutls-dev libpq-dev
+RUN docker-php-ext-install pdo pdo_mysql bcmath curl
+
+RUN pecl install -o -f redis \
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable redis
+
+# Set working directory to /var/www.
+WORKDIR /var/www
+# Copy files from current folder to container current folder (set in workdir).
+COPY --chown=www-data:www-data . .
+#COPY . .
+
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+
+ENV PORT=8000
+#COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x entrypoint.sh
+# Run the entrypoint file.
+ENTRYPOINT [ "entrypoint.sh" ]
