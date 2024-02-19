@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\StudentAPIController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,7 +10,14 @@ Route::get('/create', [StudentController::class, 'create'])->name('student.creat
 Route::post('/create', [StudentController::class, 'store'])->name('student.store');
 
 
-
+//Route::get('/student-index', [StudentAPIController::class, 'index'])->name('student-api.index');
+////view detail of 1 student
+//Route::get('/student-index/{id}', [StudentAPIController::class, 'show'])->name('student-api.show');
+////update 1 student
+//Route::put('/student-index/{id}', [StudentAPIController::class, 'update'])->name('student-api.update');
+//Route::get('/token', function () {
+//    return csrf_token();
+//});
 
 /**
  * Controllers Routing

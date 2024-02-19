@@ -27,5 +27,6 @@ class StudentController extends Controller
         $student->gender = $request->post('gender');
         $student->birth_date = date('Y-m-d', strtotime($request->post('birth_date')));
         $student->save();
+        return redirect()->route('student.index');
     }
 }
