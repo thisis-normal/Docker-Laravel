@@ -2,22 +2,22 @@ version: '3.8'
 
 services:
     #Nginx Service
-    nginx:
-        container_name: nginx
-        image: nginx:alpine
-        ports:
-            - "80:80"
-        depends_on:
-            - php
-            - database
-        volumes:
-            - ./:/var/www
-            - ./entrypoint.sh:/usr/local/bin/entrypoint.sh
-        environment:
-            - APP_ENV=${APP_ENV}
-            - CONTAINER_ROLE=web
-        networks:
-            - app-network
+#    nginx:
+#        container_name: nginx
+#        image: nginx:alpine
+#        ports:
+#            - "80:80"
+#        depends_on:
+#            - php
+#            - database
+#        volumes:
+#            - ./:/var/www
+#            - ./entrypoint.sh:/usr/local/bin/entrypoint.sh
+#        environment:
+#            - APP_ENV=${APP_ENV}
+#            - CONTAINER_ROLE=web
+#        networks:
+#            - app-network
     #PHP Service
     php:
         build:

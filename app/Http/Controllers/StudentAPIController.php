@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateStudentApiRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Laravel\Sanctum\HasApiTokens;
 
 class StudentAPIController extends Controller
@@ -36,9 +38,14 @@ class StudentAPIController extends Controller
         $student->save();
         return response()->json($student);
     }
-    public function update(UpdateStudentRequest $request, $id)
+    public function update(UpdateStudentApiRequest $request, $id): JsonResponse
     {
-        var_dump($id); die();
+        $student = Student::query()->find($id);
+        var_dump($student); die();
+        $student->save();
+        return response()->json(1);
+    }
+//    {
 //        $student = Student::query()->find($id);
 //        if (!$student) {
 //            return response()->json([
@@ -50,7 +57,7 @@ class StudentAPIController extends Controller
 //        //update the student infor
 //        $student->save();
 //        return response()->json($student);
-    }
+//    }
     public function destroy($id)
     {
         $student = Student::query()->find($id);

@@ -23,5 +23,5 @@ Route::get('/student-index', [StudentAPIController::class, 'index'])->name('stud
 Route::get('/student-index/{id}', [StudentAPIController::class, 'show'])->name('student-api.show');
 //update 1 student
 Route::post('/student-create', [StudentAPIController::class, 'store'])->name('student-api.store');
-Route::put('/student-index/{id}', [StudentAPIController::class, 'update'])->name('student-api.update');
+Route::put('/student-put/{id}', [StudentAPIController::class, 'update'])->name('student-api.update');
 Route::delete('/student/{id}', [StudentAPIController::class, 'destroy'])->name('student-api.destroy');

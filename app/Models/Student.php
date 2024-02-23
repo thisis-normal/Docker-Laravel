@@ -17,7 +17,9 @@ class Student extends Model
     private string $last_name;
     private bool $gender;
     private datetime $birth_date;
-
+    protected $fillable = [
+        'first_name',
+        'last_name'];
 
     /**
      * Get the user's full name.
@@ -41,8 +43,9 @@ class Student extends Model
             get: fn($value, $attributes) => (new DateTime($attributes['birth_date']))->diff(new DateTime())->y,
         );
     }
+
     //render gender from boolean to string
-    public function gender() : Attribute
+    public function gender(): Attribute
     {
         return Attribute::make(
 //            get: fn($value, $attributes) => $attributes === '1' ? 'Male' : 'Female',
