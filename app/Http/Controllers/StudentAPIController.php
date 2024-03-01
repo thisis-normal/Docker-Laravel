@@ -18,6 +18,7 @@ class StudentAPIController extends Controller
         return response()->json($studentList);
     }
 
+
     public function show($id): JsonResponse
     {
         $student = Student::query()->find($id);
