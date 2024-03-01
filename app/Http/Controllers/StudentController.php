@@ -29,4 +29,8 @@ class StudentController extends Controller
         $student->save();
         return redirect()->route('student.index');
     }
+    public function viewImage()
+    {
+        return 1;
+    }
 }

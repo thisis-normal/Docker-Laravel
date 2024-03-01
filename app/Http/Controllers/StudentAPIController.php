@@ -17,6 +17,7 @@ class StudentAPIController extends Controller
         $studentList = Student::query()->get();
         return response()->json($studentList);
     }
+
     public function show($id): JsonResponse
     {
         $student = Student::query()->find($id);
@@ -27,9 +28,11 @@ class StudentAPIController extends Controller
         }
         return response()->json($student);
     }
+
     public function store(FormRequest $request): JsonResponse
     {
-        var_dump(1); die();
+        var_dump(1);
+        die();
         $student = new Student();
         $student->first_name = request()->post('first_name');
         $student->last_name = request()->post('last_name');
@@ -38,10 +41,12 @@ class StudentAPIController extends Controller
         $student->save();
         return response()->json($student);
     }
-    public function update(UpdateStudentApiRequest $request, $id): JsonResponse
+
+    public function update(UpdateStudentApiRequest $request): JsonResponse
     {
-        $student = Student::query()->find($id);
-        var_dump($student); die();
+        dd($request->all(), $request->validated());
+        var_dump($student);
+        die();
         $student->save();
         return response()->json(1);
     }
@@ -70,5 +75,21 @@ class StudentAPIController extends Controller
         return response()->json([
             'message' => 'Student deleted'
         ]);
+    }
+
+    public function viewImage()
+    {
+        //return image path in storage/app/public folder
+        return response()->json([
+            'image_path' => 'storage/app/public/background.png'
+        ]);
+    }
+    public function renderImage()
+    {
+        //return image file
+//        return response()->json([
+//            'img' => file_get_contents(storage_path('app/public/background.png'))
+//        ]);
+        return response()->file(storage_path('app/public/background.png'));
     }
 }

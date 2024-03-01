@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+Route::get('/view-image', [StudentAPIController::class, 'viewImage']);
+Route::get('/image', [StudentAPIController::class, 'renderImage']);
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
@@ -23,5 +24,5 @@ Route::get('/student-index', [StudentAPIController::class, 'index'])->name('stud
 Route::get('/student-index/{id}', [StudentAPIController::class, 'show'])->name('student-api.show');
 //update 1 student
 Route::post('/student-create', [StudentAPIController::class, 'store'])->name('student-api.store');
-Route::put('/student-put/{id}', [StudentAPIController::class, 'update'])->name('student-api.update');
+Route::put('/student-put', [StudentAPIController::class, 'update'])->name('student-api.update');
 Route::delete('/student/{id}', [StudentAPIController::class, 'destroy'])->name('student-api.destroy');

@@ -23,7 +23,7 @@ class UpdateStudentRequest extends FormRequest
     public function rules(): array
     {
         return [
-////            'id' => 'bail|required|exists:students,id',
+            'id' => 'bail|required|exists:students,id',
             'first_name' => 'bail|required|string|max:255',
             'last_name' => 'bail|required|string|max:255'
         ];
@@ -34,7 +34,7 @@ class UpdateStudentRequest extends FormRequest
             'required' => 'The :attribute field is required.',
             'string' => 'The :attribute field must be a string.',
             'max' => 'The :attribute field must be less than :max characters.',
-//            'exists' => 'The :attribute field is not exists.'
+            'exists' => 'The :attribute field is not exists.'
         ];
     }
 //    public function response(array $errors)
