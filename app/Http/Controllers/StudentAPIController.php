@@ -85,12 +85,22 @@ class StudentAPIController extends Controller
             'image_path' => 'storage/app/public/background.png'
         ]);
     }
+
     public function renderImage()
     {
         //return image file
-//        return response()->json([
-//            'img' => file_get_contents(storage_path('app/public/background.png'))
+        return response()->json([
+            "id" => 1,
+            "name" => "John",
+            "label" => "Doe",
+            "title" => "Mr",
+            //send image as a link to view the image in the browser
+            "img" => asset('storage/background.png'),
+            "path" => "storage/app/public/background.png",
+            "categoryId" => 1,
+        ]);
+//        return response()->file(storage_path('app/public/background.png'), [
+//            'Content-Type' => 'image/png'
 //        ]);
-        return response()->file(storage_path('app/public/background.png'));
     }
 }
