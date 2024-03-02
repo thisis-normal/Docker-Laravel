@@ -90,14 +90,54 @@ class StudentAPIController extends Controller
     {
         //return image file
         return response()->json([
-            "id" => 1,
-            "name" => "John",
-            "label" => "Doe",
-            "title" => "Mr",
-            //send image as a link to view the image in the browser
-            "img" => asset('storage/background.png'),
-            "path" => "storage/app/public/background.png",
-            "categoryId" => 1,
+            [
+                "id" => 1,
+                "name" => "Nguyen Van A",
+                "label" => "Nguyen Van A",
+                "title" => "Nguyen Van A",
+                "img" => asset('storage/background.png'),
+                "categoryId" => "1",
+                "subcategories" => [
+                    [
+                        "id" => 1,
+                        "name" => "Nguyen Van A",
+                        "label" => "Nguyen Van A",
+                        "title" => "Nguyen Van A",
+                        "img" => asset('storage/background.png')
+                    ],
+                    [
+                        "id" => 2,
+                        "name" => "Nguyen Van B",
+                        "label" => "Nguyen Van B",
+                        "title" => "Nguyen Van B",
+                        "img" => asset('storage/background.png')
+                    ]
+                ]
+            ],
+            [
+                "id" => 2,
+                "name" => "Nguyen Van B",
+                "label" => "Nguyen Van B",
+                "title" => "Nguyen Van B",
+                "img" => asset('storage/background.png'),
+                "categoryId" => "2",
+                "subcategories" => [
+                    [
+                        "id" => 1,
+                        "name" => "Nguyen Van A",
+                        "label" => "Nguyen Van A",
+                        "title" => "Nguyen Van A",
+                        "img" => asset('storage/background.png')
+                    ],
+                    [
+                        "id" => 2,
+                        "name" => "Nguyen Van B",
+                        "label" => "Nguyen Van B",
+                        "title" => "Nguyen Van B",
+                        "img" => asset('storage/background.png')
+                    ]
+                ]
+            ]
         ]);
 //        return response()->file(storage_path('app/public/background.png'), [
 //            'Content-Type' => 'image/png'
