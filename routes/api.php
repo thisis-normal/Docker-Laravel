@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::get('/view-image', [StudentAPIController::class, 'viewImage']);
+Route::get('/test', function () {
+    return response()->json(['message' => 'test']);
+});
 Route::get('/image', [StudentAPIController::class, 'renderImage']);
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();

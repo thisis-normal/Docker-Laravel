@@ -78,11 +78,11 @@ class StudentAPIController extends Controller
         ]);
     }
 
-    public function viewImage()
+    public function test()
     {
         //return image path in storage/app/public folder
         return response()->json([
-            'image_path' => 'storage/app/public/background.png'
+            'message' => 'test'
         ]);
     }
 
@@ -139,8 +139,5 @@ class StudentAPIController extends Controller
                 ]
             ]
         ]);
-//        return response()->file(storage_path('app/public/background.png'), [
-//            'Content-Type' => 'image/png'
-//        ]);
     }
 }
