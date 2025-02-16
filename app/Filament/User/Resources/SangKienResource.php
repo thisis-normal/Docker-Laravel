@@ -4,6 +4,7 @@ namespace App\Filament\User\Resources;
 
 use App\Filament\User\Resources\SangKienResource\Pages;
 use App\Filament\User\Resources\SangKienResource\RelationManagers;
+use App\Models\LnkSangKienFile;
 use App\Models\SangKien;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -18,6 +19,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,9 +37,67 @@ class SangKienResource extends Resource
             ->schema([
                 TextInput::make('ten_sang_kien')->label('Tên sáng kiến')->required()->columnSpan('full'),
                 Textarea::make('mo_ta')->label('Mô tả')->required()->columnSpan('full'),
-                FileUpload::make('file')->label('File')->required()->columnSpan('full'),
-                Hidden::make('author_id')->default(Auth::id()),
+                FileUpload::make('files')
+                    ->label('File')
+                    ->multiple()
+                    ->acceptedFileTypes(['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOC, DOCX
+                        'application/pdf', // PDF
+                        'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']) // XLS, XLSX
+                    ->directory('innovation-files') // Save files inside storage/app/public/innovation-files
+                    ->downloadable() // Allow users to download files after upload
+                    ->openable() // Enable preview/download
+                    ->required()
+                    ->columnSpan('full')
+                    ->afterStateHydrated(function ($state, callable $set, $record) { // Add $record
+                        if ($record) { // Check if $record exists
+                            $set('files', LnkSangKienFile::where('sang_kien_id', $record->id)
+                                ->pluck('file_path')
+                                ->toArray());
+                        }
+                    })
+                    ->dehydrateStateUsing(function ($state) {
+                        if (!empty($state)) { // Check if files were uploaded
+                            return $state; // Return the state if files were uploaded
+                        }
+                        return null; // Only return null if NO files were uploaded
+                    }),
+                Hidden::make('ma_tac_gia')->default(Auth::id()),
             ]);
+    }
+
+    public static function create(array $data): Model
+    {
+        $sangKien = parent::create($data); // Create the SangKien record FIRST
+
+        if (isset($data['files'])) {
+            foreach ($data['files'] as $file) {
+                LnkSangKienFile::create([
+                    'sang_kien_id' => $sangKien->id,
+                    'file_path' => $file,
+                ]);
+            }
+        }
+
+        return $sangKien;
+    }
+
+    public static function update(Model $record, array $data): Model
+    {
+        // Remove old files
+        LnkSangKienFile::where('sang_kien_id', $record->id)->delete();
+
+        $record = parent::update($record, $data); // Update other fields
+
+        if (isset($data['files'])) {
+            foreach ($data['files'] as $file) {
+                LnkSangKienFile::create([
+                    'sang_kien_id' => $record->id,
+                    'file_path' => $file,
+                ]);
+            }
+        }
+
+        return $record;
     }
 
     /**
@@ -54,6 +114,14 @@ class SangKienResource extends Resource
                 TextColumn::make('ten_sang_kien')->label('Tên sáng kiến')->searchable()->sortable(),
                 TextColumn::make('mo_ta')->label('Mô tả')->searchable()->sortable(),
                 TextColumn::make('user.name')->label('Tác giả')->searchable()->sortable(),
+
+                // ✅ Show Uploaded Files (Clickable)
+                TextColumn::make('files')
+                    ->label('Uploaded Files')
+                    ->formatStateUsing(fn ($state) => collect(json_decode($state, true))
+                        ->map(fn ($file) => "<a href='/storage/innovation-files/$file' target='_blank'>$file</a>")
+                        ->implode(', '))
+                    ->html(),
             ])
             ->filters([
                 Filter::make('Search')

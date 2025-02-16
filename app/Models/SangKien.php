@@ -10,8 +10,10 @@ class SangKien extends Model
 {
     use HasFactory;
     protected $table = 'sang_kien';
-    protected $fillable = ['ten_sang_kien', 'mo_ta', 'ma_tac_gia'];
-
+    protected $fillable = ['ten_sang_kien', 'mo_ta', 'ma_tac_gia', 'files'];
+    protected $casts = [
+        'files' => 'array',
+    ];
     //define relationship with User model
     public function user(): BelongsTo
     {
