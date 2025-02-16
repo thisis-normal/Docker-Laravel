@@ -49,7 +49,8 @@
     45 => 'App\\Providers\\AuthServiceProvider',
     46 => 'App\\Providers\\EventServiceProvider',
     47 => 'App\\Providers\\Filament\\AdminPanelProvider',
-    48 => 'App\\Providers\\RouteServiceProvider',
+    48 => 'App\\Providers\\Filament\\UserPanelProvider',
+    49 => 'App\\Providers\\RouteServiceProvider',
   ),
   'eager' => 
   array (
@@ -87,7 +88,8 @@
     31 => 'App\\Providers\\AuthServiceProvider',
     32 => 'App\\Providers\\EventServiceProvider',
     33 => 'App\\Providers\\Filament\\AdminPanelProvider',
-    34 => 'App\\Providers\\RouteServiceProvider',
+    34 => 'App\\Providers\\Filament\\UserPanelProvider',
+    35 => 'App\\Providers\\RouteServiceProvider',
   ),
   'deferred' => 
   array (
