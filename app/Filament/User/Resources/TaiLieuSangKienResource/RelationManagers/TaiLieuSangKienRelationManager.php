@@ -32,13 +32,21 @@ class TaiLieuSangKienRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('file_path')
             ->columns([
+                Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('file_path'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->mutateFormDataUsing(function (array $data): array {
+                        if (isset($data['file_path']) && is_array($data['file_path'])) {
+                            // Convert to single file path if multiple were provided
+                            $data['file_path'] = $data['file_path'][0];
+                        }
+                        return $data;
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

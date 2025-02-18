@@ -11,7 +11,19 @@ class SangKien extends Model
 {
     use HasFactory;
     protected $table = 'sang_kien';
-    protected $fillable = ['ten_sang_kien', 'mo_ta', 'ma_tac_gia', 'files'];
+    protected $fillable = [
+        'id',
+        'ten_sang_kien',
+        'hien_trang',
+        'mo_ta',
+        'ket_qua',
+        'ma_tac_gia',
+        'ma_don_vi',
+        'ma_trang_thai_sang_kien',
+        'ghi_chu',
+        'created_at',
+        'updated_at',
+    ];
     protected $casts = [
         'files' => 'array',
     ];
