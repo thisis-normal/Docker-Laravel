@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('courses', function (Blueprint $table) {
-            $table->id();
-            $table->string('course_name', 500)->unique();
-            $table->timestamps();
+        Schema::table('trang_thai_sang_kien', function (Blueprint $table) {
+            $table->string('ma_trang_thai')->nullable()->after('id');
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('courses');
+        Schema::table('trang_thai_sang_kien', function (Blueprint $table) {
+            $table->dropColumn('ma_trang_thai');
+        });
     }
 };

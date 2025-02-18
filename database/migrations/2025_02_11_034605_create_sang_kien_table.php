@@ -18,6 +18,10 @@ return new class extends Migration
             $table->string('mo_ta')->nullable();
             $table->unsignedBigInteger('ma_tac_gia');
             $table->foreign('ma_tac_gia')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('ma_don_vi');
+            $table->foreign('ma_don_vi')->references('id')->on('don_vi')->onDelete('cascade');
+            $table->unsignedBigInteger('ma_trang_thai_sang_kien');
+            $table->foreign('ma_trang_thai_sang_kien')->references('id')->on('trang_thai_sang_kien')->onDelete('cascade');
         });
     }
 

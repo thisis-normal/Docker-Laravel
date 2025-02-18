@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sang_kien', function (Blueprint $table) {
-            $table->timestamps();
+            $table->dropColumn('tieu_de');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('sang_kien', function (Blueprint $table) {
-            $table->timestamps();
+            $table->text('tieu_de')->nullable();
         });
     }
 };

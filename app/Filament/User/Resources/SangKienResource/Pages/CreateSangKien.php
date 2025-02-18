@@ -3,7 +3,7 @@
 namespace App\Filament\User\Resources\SangKienResource\Pages;
 
 use App\Filament\User\Resources\SangKienResource;
-use App\Models\LnkSangKienFile;
+use App\Models\TaiLieuSangKien;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -28,7 +28,7 @@ class CreateSangKien extends CreateRecord
         // Check if files were uploaded
         if (! empty($data['files'])) {
             foreach ($data['files'] as $filePath) {
-                LnkSangKienFile::query()->create([
+                TaiLieuSangKien::query()->create([
                     'sang_kien_id' => $this->record->id,
                     'file_path'   => $filePath,
                 ]);

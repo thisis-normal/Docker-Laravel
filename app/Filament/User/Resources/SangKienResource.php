@@ -4,13 +4,15 @@ namespace App\Filament\User\Resources;
 
 use App\Filament\User\Resources\SangKienResource\Pages;
 use App\Filament\User\Resources\SangKienResource\RelationManagers;
-use App\Models\LnkSangKienFile;
+use App\Filament\User\Resources\TaiLieuSangKienResource\RelationManagers\TaiLieuSangKienRelationManager;
+use App\Models\TaiLieuSangKien;
 use App\Models\SangKien;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -37,41 +39,43 @@ class SangKienResource extends Resource
         return $form
             ->schema([
                 TextInput::make('ten_sang_kien')->label('Tên sáng kiến')->required()->columnSpan('full'),
-                Textarea::make('mo_ta')->label('Mô tả')->required()->columnSpan('full'),
-                FileUpload::make('files')
-                    ->disk('public')
-                    ->label('File')
-                    ->multiple()
-                    ->maxFiles(5)
-                    ->acceptedFileTypes([
-                        'application/msword',
-                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOC, DOCX
-                        'application/pdf', // PDF
-                        'application/vnd.ms-excel',
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // XLS, XLSX
-                    ])
-                    ->directory('innovation-files')
-                    ->downloadable()
-                    ->openable()
-                    ->required()
-                    ->columnSpan('full')
-                    ->maxSize(10 * 1024) // 10 MB
-                    ->helperText('Chỉ chấp nhận các loại file: DOC, DOCX, PDF, XLS, XLSX. Dung lượng tối đa 10MB/file.')
-                    ->afterStateHydrated(function ($state, callable $set, $record) {
-                        if ($record) {
-                            $set('files', LnkSangKienFile::query()->where('sang_kien_id', $record->id)
-                                ->pluck('file_path')
-                                ->toArray());
-                        }
-                    })
-                    ->dehydrateStateUsing(function ($state) {
-                        return !empty($state) ? $state : null;
-                    })
-                    ->validationMessages([
-                        'files.max' => 'Số lượng file tối đa là 5.',
-                        'files.acceptedFileTypes' => 'Chỉ chấp nhận các loại file: DOC, DOCX, PDF, XLS, XLSX.',
-                        'files.maxSize' => 'Dung lượng tối đa 10MB/file.',
-                    ]),
+                RichEditor::make('hien_trang')->label('Hiện trạng')->disableToolbarButtons(['attachFiles', 'link'])->required()->columnSpan('full'),
+                RichEditor::make('mo_ta')->label('Mô tả')->disableToolbarButtons(['attachFiles', 'link'])->required()->columnSpan('full'),
+                RichEditor::make('ket_qua')->label('Kết quả')->disableToolbarButtons(['attachFiles', 'link'])->required()->columnSpan('full'),
+//                FileUpload::make('files')
+//                    ->disk('public')
+//                    ->label('File')
+//                    ->multiple()
+//                    ->maxFiles(5)
+//                    ->acceptedFileTypes([
+//                        'application/msword',
+//                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOC, DOCX
+//                        'application/pdf', // PDF
+//                        'application/vnd.ms-excel',
+//                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // XLS, XLSX
+//                    ])
+//                    ->directory('innovation-files')
+//                    ->downloadable()
+//                    ->openable()
+//                    ->required()
+//                    ->columnSpan('full')
+//                    ->maxSize(10 * 1024) // 10 MB
+//                    ->helperText('Chỉ chấp nhận các loại file: DOC, DOCX, PDF, XLS, XLSX. Dung lượng tối đa 10MB/file.')
+//                    ->afterStateHydrated(function ($state, callable $set, $record) {
+//                        if ($record) {
+//                            $set('files', TaiLieuSangKien::query()->where('sang_kien_id', $record->id)
+//                                ->pluck('file_path')
+//                                ->toArray());
+//                        }
+//                    })
+//                    ->dehydrateStateUsing(function ($state) {
+//                        return !empty($state) ? $state : null;
+//                    })
+//                    ->validationMessages([
+//                        'files.max' => 'Số lượng file tối đa là 5.',
+//                        'files.acceptedFileTypes' => 'Chỉ chấp nhận các loại file: DOC, DOCX, PDF, XLS, XLSX.',
+//                        'files.maxSize' => 'Dung lượng tối đa 10MB/file.',
+//                    ]),
                 Hidden::make('ma_tac_gia')->default(Auth::id()),
             ]);
     }
@@ -120,7 +124,7 @@ class SangKienResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TaiLieuSangKienRelationManager::class,
         ];
     }
 

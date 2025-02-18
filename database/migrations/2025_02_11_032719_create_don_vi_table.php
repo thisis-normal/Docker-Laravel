@@ -9,24 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('feedback', function (Blueprint $table) {
+        Schema::create('don_vi', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('content');
-            $table->string('email');
-            $table->string('file_path')->nullable();
+            $table->string('ten_don_vi');
+            $table->string('mo_ta')->nullable();
+            $table->foreignId('don_vi_cha_id')->nullable()->constrained('don_vi');
+            $table->tinyInteger('trang_thai')->default(1);
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('feedback');
+        Schema::dropIfExists('don_vi');
     }
 };

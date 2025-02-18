@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lnk_sang_kien_files', function (Blueprint $table) {
+        Schema::create('trang_thai_sang_kien', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sang_kien_id')->constrained('sang_kien')->onDelete('cascade');
-            $table->string('file_path');
+            $table->string('ten_trang_thai');
+            $table->string('mo_ta')->nullable();
+            $table->integer('order');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lnk_sang_kien_files');
+        Schema::dropIfExists('trang_thai_sang_kien');
     }
 };

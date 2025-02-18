@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // create_treatments_table
-        Schema::create('treatments', function (Blueprint $table) {
+        Schema::create('tai_lieu_sang_kien', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
-            $table->text('notes')->nullable();
-            $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
-            $table->unsignedInteger('price')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('treatments');
+        Schema::dropIfExists('tai_lieu_sang_kien');
     }
 };

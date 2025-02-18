@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
-            $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->date('birth_date');
-            $table->boolean('gender');
-            $table->timestamps();
+        Schema::table('sang_kien', function (Blueprint $table) {
+            $table->unsignedBigInteger('ma_trang_thai_sang_kien')->default(1)->change();
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::table('sang_kien', function (Blueprint $table) {
+            $table->unsignedBigInteger('ma_trang_thai_sang_kien')->change();
+        });
     }
 };
