@@ -36,4 +36,9 @@ class SangKien extends Model
     {
         return $this->hasMany(TaiLieuSangKien::class, 'sang_kien_id');
     }
+    //define relationship with tram_thai_sang_kien model
+    public function trangThaiSangKien(): BelongsTo
+    {
+        return $this->belongsTo(TrangThaiSangKien::class, 'ma_trang_thai_sang_kien', 'id');
+    }
 }

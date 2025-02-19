@@ -3,12 +3,14 @@
 namespace App\Filament\User\Resources;
 
 use App\Filament\User\Resources\SangKienResource\Pages;
-use App\Filament\User\Resources\SangKienResource\RelationManagers;
 use App\Filament\User\Resources\TaiLieuSangKienResource\RelationManagers\TaiLieuSangKienRelationManager;
 use App\Models\TaiLieuSangKien;
 use App\Models\SangKien;
 use Exception;
 use Filament\Forms;
+use Filament\Forms\Components\Actions;
+use Filament\Pages\Actions\ButtonAction;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -16,6 +18,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -25,6 +28,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use ZipArchive;
 
 class SangKienResource extends Resource
 {
@@ -85,20 +89,37 @@ class SangKienResource extends Resource
         return $table
             ->query(
                 SangKien::query()
-                    ->where('ma_tac_gia', Auth::id()) // Only show records created by the current user
+                    ->where('ma_tac_gia', Auth::id())
             )
             ->columns([
                 TextColumn::make('ten_sang_kien')->label('Tên sáng kiến')->searchable()->sortable(),
                 TextColumn::make('mo_ta')->label('Mô tả')->searchable()->sortable(),
                 TextColumn::make('user.name')->label('Tác giả')->searchable()->sortable(),
 
-                // ✅ Show Uploaded Files (Clickable)
-                TextColumn::make('files')
-                    ->label('Uploaded Files')
-                    ->formatStateUsing(fn ($state) => collect(json_decode($state, true))
-                        ->map(fn ($file) => "<a href='/storage/innovation-files/$file' target='_blank'>$file</a>")
-                        ->implode(', '))
-                    ->html(),
+                TextColumn::make('taiLieuSangKien.file_path')
+                    ->label('File đính kèm')
+                    ->state(function ($record) {
+                        // Check if relationship exists and has items
+                        if (!$record->taiLieuSangKien || $record->taiLieuSangKien->isEmpty()) {
+                            return 'Không có file nào được tải lên.';
+                        }
+                        // Return the array of file paths directly
+                        return $record->taiLieuSangKien->pluck('file_path')->toArray();
+                    })
+                    ->listWithLineBreaks(),
+
+                TextColumn::make('trangThaiSangKien.ten_trang_thai')
+                    ->label('Trạng thái')
+                    ->color(fn ($record) => match ($record->trangThaiSangKien->ma_trang_thai) {
+                        'Draft' => 'gray', // Neutral gray for drafts
+                        'Pending' => 'amber', // Amber (yellow-orange) for pending actions
+                        'Checking' => 'calm-blue', // Calm blue for checking
+                        'Reviewing' => 'indigo', // Indigo for reviewing
+                        'Scoring1' => 'lime', // Bright lime green for initial scoring
+                        'Scoring2' => 'emerald', // Rich emerald green for secondary scoring
+                        'Approved' => 'green', // Vibrant green for approved items
+                        default => 'red', // Bold red for rejected or unknown states
+                    }),
             ])
             ->filters([
                 Filter::make('Search')
@@ -107,6 +128,49 @@ class SangKienResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Action::make('Download')
+                    ->label('Tải xuống')
+                    ->visible(function ($record) {
+                        // Check if the relationship exists and has items
+                        return $record->taiLieuSangKien && $record->taiLieuSangKien->isNotEmpty();
+                    })
+                    ->action(function ($record) {
+                        try {
+                            // Check if relationship exists and has items
+                            if (!$record->taiLieuSangKien || $record->taiLieuSangKien->isEmpty()) {
+                                Notification::make()
+                                    ->title('Không có tệp để tải xuống')
+                                    ->warning()
+                                    ->send();
+                                return null;
+                            }
+                            // Create a new zip archive
+                            $zip = new ZipArchive();
+                            $zipName = 'innovation-files-' . $record->id . '.zip';
+                            $zip->open(storage_path('app/public/' . $zipName), ZipArchive::CREATE | ZipArchive::OVERWRITE);
+                            // Add each file to the archive
+                            foreach ($record->taiLieuSangKien as $file) {
+                                $zip->addFile(storage_path('app/public/' . $file->file_path), $file->file_path);
+                            }
+                            $zip->close();
+                            // Return the zip file
+                            Notification::make()
+                                ->title('Tải xuống thành công')
+                                ->success()
+                                ->send();
+                            // Return the zip file
+                            return response()->download(storage_path('app/public/' . $zipName))->deleteFileAfterSend();
+                        } catch (Exception $e) {
+                            return Notification::make()
+                                ->title('Tải xuống thất bại')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+
+                    })
+                ->successNotificationTitle('Tải xuống thành công')
+                ->failureNotificationTitle('Tải xuống thất bại')
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->label('Thêm mới sáng kiến'),
