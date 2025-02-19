@@ -125,10 +125,11 @@ class SangKienResource extends Resource
                     ->query(fn (Builder $query, $value) => $query->where('title', 'like', "%$value%")),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->label('Chỉnh sửa'),
+                Tables\Actions\DeleteAction::make()->label('Xóa'),
                 Action::make('Download')
                     ->label('Tải xuống')
+                    ->icon('heroicon-o-arrow-down-tray')
                     ->visible(function ($record) {
                         // Check if the relationship exists and has items
                         return $record->taiLieuSangKien && $record->taiLieuSangKien->isNotEmpty();
@@ -167,9 +168,21 @@ class SangKienResource extends Resource
                                 ->send();
                         }
 
+                    }),
+                Action::make('Submit')
+                    ->label('Gửi duyệt')
+                    ->icon('heroicon-o-check-circle')
+                    ->visible(function ($record) {
+                        return $record->trangThaiSangKien->ma_trang_thai == 'Draft';
                     })
-                ->successNotificationTitle('Tải xuống thành công')
-                ->failureNotificationTitle('Tải xuống thất bại')
+                    ->action(function ($record) {
+                        $record->trangThaiSangKien->ma_trang_thai = 'Pending';
+                        $record->trangThaiSangKien->save();
+                        Notification::make()
+                            ->title('Đã chuyển sáng kiến sang trạng thái chờ duyệt')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->label('Thêm mới sáng kiến'),
